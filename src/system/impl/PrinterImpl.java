@@ -1,5 +1,8 @@
 package system.impl;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,7 +135,29 @@ class PrinterImpl implements Printer{
 		otfmt.liner( "| | | |=|=|" ).liner( "| | | | | |" );
 		return formatter.getBuffer();
 	}
-
+	
+	/**
+	 * Print orders as table to a file.
+	 * 
+	 * Conditions:
+	 *  - creates new file or overwrites an existing file.
+	 *  - not existing parts of the path are creates, throws IOException
+	 *    if this is not possible.
+	 *    
+	 *    @param orders list of orders to print.
+	 *    @param filepath path and name of the output file.
+	 *    @throws IOException for errors.
+	 */
+	@Override
+	public void printOrdersToFile( Iterable<Order> orders, String filepath ) throws IOException {
+		File file = new File(filepath);
+		file.getParentFile().mkdirs();
+		FileWriter fileWriter = new FileWriter(file);
+		fileWriter.write(printOrders(orders).toString());
+		fileWriter.close();
+		//throw new IOException( "not implemented." );
+	}
+	
 	/**
 	 * Create new format
 	 * 

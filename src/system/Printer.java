@@ -32,18 +32,8 @@ public interface Printer {
 	 */
 	public StringBuffer printOrder( Order order ); 
 	
-	/**
-	 * Print orders as table to a file.
-	 * 
-	 * Conditions:
-	 *  - creates new file or overwrites an existing file.
-	 *  - not existing parts of the path are creates, throws IOException
-	 *    if this is not possible.
-	 *    
-	 *    @param orders list of orders to print.
-	 *    @param filepath path and name of the output file.
-	 *    @throws IOException for errors.
-	 */
+
+
 	void printOrdersToFile( Iterable<Order> orders, String filepath ) throws IOException;
 	
 	
