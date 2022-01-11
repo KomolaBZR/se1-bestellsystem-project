@@ -165,6 +165,13 @@ public interface RTE {
 		 * @return chainable self reference.
 		 */
 		Runtime loadData();
+		
+		/**
+		 * Return singleton instance of OrderBuilder.
+		 * 
+		 * @return singleton instance of OrderBuilder
+		 */
+		OrderBuilder getOrderBuilder();
 
 	}
 
