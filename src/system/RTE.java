@@ -172,6 +172,13 @@ public interface RTE {
 		 * @return singleton instance of OrderBuilder
 		 */
 		OrderBuilder getOrderBuilder();
+		
+		/**
+		   * Return singleton instance of InventoryManager.
+		   *
+		   * @return singleton instance of InventoryManager.
+		   */
+		InventoryManager getInventoryManager();
 
 	}
 

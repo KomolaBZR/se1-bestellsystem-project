@@ -3,7 +3,7 @@ package application;
 import datamodel.Order;
 import system.RTE;
 import system.RTE.Runtime;
-import system.impl.OrderBuilderImpl;
+import system.OrderBuilder;
 
 //
 import static system.RTE.Configuration.KEY_DATASOURCE;
@@ -55,7 +55,7 @@ public class Application_E34 {
 				System.out.println( "system is running..." );
 			});
 
-		OrderBuilderImpl ob = runtime.getOrderBuilder();
+		OrderBuilder ob = runtime.getOrderBuilder();
 			//
 		ob.build();		// build and save orders to OrderRepository
 		
