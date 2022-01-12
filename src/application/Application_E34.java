@@ -3,6 +3,8 @@ package application;
 import datamodel.Order;
 import system.RTE;
 import system.RTE.Runtime;
+import system.impl.OrderBuilderImpl;
+
 //
 import static system.RTE.Configuration.KEY_DATASOURCE;
 import static system.RTE.Configuration.JSON_DATASOURCE;
@@ -53,7 +55,7 @@ public class Application_E34 {
 				System.out.println( "system is running..." );
 			});
 
-		OrderBuilder ob = OrderBuilder.getInstance( runtime );
+		OrderBuilderImpl ob = runtime.getOrderBuilder();
 			//
 		ob.build();		// build and save orders to OrderRepository
 		
@@ -67,14 +69,6 @@ public class Application_E34 {
 				System.err.println( "Error printing orders to: " + filepath +
 						", reason: " + e.getMessage() );
 				}
-
-	//	OrderBuilder ob = OrderBuilder.getInstance( runtime );
-		//
-	//	ob.build();		// build and save orders to OrderRepository
-
-	//	StringBuffer sb = runtime.getPrinter().printOrders( orders );
-
-	//	System.out.println( sb.toString() );
 
 		runtime.shutdown( rt -> { System.out.println( "...shutting down." ); } );
 		
