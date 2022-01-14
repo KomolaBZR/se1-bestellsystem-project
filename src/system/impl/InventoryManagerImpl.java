@@ -1,5 +1,7 @@
 package system.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import datamodel.Article;
@@ -10,15 +12,19 @@ import system.RTE;
 
 class InventoryManagerImpl implements InventoryManager {
 	/**
-	 * private static singleton instance (lazy instantiation).
+	 * private static singleton instance.
 	 */
 	private static InventoryManager iM_instance = null;
 	
 	private final DataRepository.ArticleRepository articleRepository;
 
+	/**
+	 * internal data structure to manage inventory (unitsInStore) by Article-id's.
+	 */
+	private final Map<String,Integer> inventory;
 
 	/**
-	 * Static access method to RTE singleton instance (singleton pattern).
+	 * Static access method to InventoryManagerImpl singleton instance (singleton pattern).
 	 * 
 	 * @return reference to InventoryManagerImpl singleton instance.
 	 */
@@ -40,6 +46,7 @@ class InventoryManagerImpl implements InventoryManager {
 
 	private InventoryManagerImpl(DataRepository.ArticleRepository articleRepository) { 
 		this.articleRepository=articleRepository;
+		this.inventory = new HashMap<>(); 
 	}
 
 
