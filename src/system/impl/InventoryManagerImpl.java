@@ -57,19 +57,19 @@ class InventoryManagerImpl implements InventoryManager {
 	@Override
 	public Optional<Article> findById(String id) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.articleRepository.findById(id);
 	}
 
 	@Override
 	public Iterable<Article> findAll() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.articleRepository.findAll();
 	}
 
 	@Override
 	public long count() {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.articleRepository.count();
 	}
 
 	/**

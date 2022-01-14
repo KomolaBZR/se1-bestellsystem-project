@@ -16,7 +16,7 @@ import system.RTE.Runtime;
  * 
  * @since "0.1.0"
  * @version "0.1.1 - feature.732 InventoryManager" 
- * @author sgra64
+ * @author Komola Benzinger
  *
  */
 
