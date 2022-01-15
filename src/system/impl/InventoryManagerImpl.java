@@ -1,5 +1,7 @@
 package system.impl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -111,13 +113,48 @@ class InventoryManagerImpl implements InventoryManager {
 	@Override
 	public boolean isFillable(Order order) {
 		// TODO Auto-generated method stub
-		return false;
+	    // array of boolean for understanding the availability of orders with a missing number of units of goods
+	    ArrayList<Boolean> listBool = new ArrayList<>();  
+	    // check all ordersItems of the order
+	    for(int i = 0; i < order.getItemsAsArray().length; i++){
+	      int orderItemNum = order.getItemsAsArray()[i].getUnitsOrdered();
+	      String orderId = order.getItemsAsArray()[i].getArticle().getId();
+	      // if there's enough number of the units
+	      if(orderItemNum <= this.inventory.get(orderId)){
+	        // then we add "true" in the list
+	        listBool.add(true);
+	      }else{
+	        // else "false"
+	        listBool.add(false);
+	      }
+	    }
+	    // check if in the list there are "false"-values, if yes,
+	    if(listBool.contains(false)){
+	      // then we return "false" for whole orderItem. 
+	      return false;
+	      // else true. Order can be placed
+	    } else{
+	      return true;
+	    }
 	}
 
 	@Override
 	public boolean fill(Order order) {
 		// TODO Auto-generated method stub
-		return false;
+		// if all orderItems are available, 
+	      if(isFillable(order)){
+	      // then we have to subtract the available number of units from the quantity in stock 
+	      for(int i = 0; i < order.getItemsAsArray().length; i++){
+	        String articleId = order.getItemsAsArray()[i].getArticle().getId();
+	        int units = order.getItemsAsArray()[i].getUnitsOrdered();
+	        int availUnits = this.inventory.get(articleId);
+	        update(articleId, availUnits - units);
+	      }
+	      // and return true for the whole order
+	      return true;
+	    } else{
+	      return false;
+	    }
 	}
 
 	/**
@@ -159,6 +196,43 @@ class InventoryManagerImpl implements InventoryManager {
 	@Override
 	public StringBuffer printInventory(int sortedBy, boolean decending, Integer... limit) {
 		// TODO Auto-generated method stub
-		return null;
+		Stream<Article> streamArticle = StreamSupport.stream(articleRepository.findAll().spliterator(), false);
+		Stream<Article> sortedSA;
+		
+		if(sortedBy == 1){
+			sortedSA = streamArticle.sorted(Comparator.comparing(p->p.getUnitPrice()));
+		}else if(sortedBy == 2){
+			sortedSA = streamArticle.sorted(Comparator.comparing(v->v.getUnitPrice()*getUnitsInStock(v.getId())));
+		}else if(sortedBy == 3){
+			sortedSA = streamArticle.sorted(Comparator.comparing(u->getUnitsInStock(u.getId())));
+		}else if(sortedBy == 4){
+			sortedSA = streamArticle.sorted(Comparator.comparing(d->d.getDescription()));
+		}else if(sortedBy == 5){
+			sortedSA = streamArticle.sorted(Comparator.comparing(i->i.getId()));
+		}else {
+			sortedSA = StreamSupport.stream(articleRepository.findAll().spliterator(), false);
+		}
+		Formatter formatter = new FormatterImpl();
+		TableFormatter tfmt = new TableFormatterImpl(formatter, new Object[][] {
+				// five column table with column specs: width and alignment ('[' left, ']'
+				// right)
+				{ 12, '[' }, { 32, '[' }, { 12, ']' }, { 10, ']' }, { 14, ']' } }).liner("+-+-+-+-+-+") // print table
+																										// header
+						.hdr("||", "Inv.-Id", "Article / Unit", "Unit", "Units", "Value")
+						.hdr("||", "", "", "Price", "in-Stock", "(in €)").liner("+-+-+-+-+-+");
+		//
+		long totalValue = sortedSA.map(a -> {
+			long unitsInStock = this.inventory.get(a.getId()).intValue();
+			long value = a.getUnitPrice() * unitsInStock;
+			tfmt.hdr("||", a.getId(), a.getDescription(),
+					formatter.fmtPrice(a.getUnitPrice(), a.getCurrency()).toString(), Long.toString(unitsInStock),
+					formatter.fmtPrice(value, a.getCurrency()).toString());
+			return value;
+		}).reduce(0L, (a, b) -> a + b);
+		//
+		String inventoryValue = formatter.fmtPrice(totalValue, Currency.EUR).toString();
+		tfmt.liner("+-+-+-+-+-+").hdr("", "", "Invent", "ory Value:", inventoryValue);
+		//
+		return tfmt.getFormatter().getBuffer();
 	}
 }

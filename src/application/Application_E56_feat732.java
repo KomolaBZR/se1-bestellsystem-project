@@ -75,8 +75,8 @@ public class Application_E56_feat732 {
 				"value of accepted orders:" + orderValueStr.toString() );
 
 		// sortedBy 1: byPrice; 2: byValue; 3: byUnits; 4: byDescription; 5: bySKU; else: unsorted
-//		inventory = im.printInventory( 2, true );
-		inventory = im.printInventory();
+		inventory = im.printInventory( 2, true );
+//		inventory = im.printInventory();
 		System.out.println( "\ninventory after orders:\n" + inventory.toString() );
 
 		runtime.shutdown( rt -> { System.out.println( "...shutting down." ); } );
