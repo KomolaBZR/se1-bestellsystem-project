@@ -1,15 +1,18 @@
 package system.impl;
 
 import system.RTE.Runtime;
+import system.Calculator;
 import system.DataRepository.CustomerRepository;
 
 import datamodel.Article;
+import datamodel.Currency;
 import datamodel.Customer;
 import datamodel.Order;
-import system.DataRepository.ArticleRepository;
 import system.DataRepository.OrderRepository;
-import system.InventoryManager;
 import system.OrderBuilder;
+import system.Formatter;
+import system.InventoryManager;
+
 
 
 /**
@@ -32,10 +35,14 @@ class OrderBuilderImpl implements OrderBuilder{
 	 */
 	private final CustomerRepository customerRepository;
 	//
-	private final ArticleRepository articleRepository;
+//	private final ArticleRepository articleRepository;
+	private final InventoryManager inventoryManager;
 	//
 	private final OrderRepository orderRepository;
-	private final InventoryManager inventoryManager = new InventoryManagerMOCK();
+	//
+	private final Calculator calculator;
+	//
+	private final Formatter formatter;
 
 	
 	/**
@@ -46,7 +53,7 @@ class OrderBuilderImpl implements OrderBuilder{
 	 */
 	OrderBuilder getOrderBuilder () {
 		if( orderBuilder == null ) {
-			orderBuilder = new OrderBuilderImpl(customerRepository, articleRepository, orderRepository);
+			orderBuilder = new OrderBuilderImpl(customerRepository, inventoryManager, orderRepository);
 		}
 		return orderBuilder;
 	}
@@ -59,26 +66,37 @@ class OrderBuilderImpl implements OrderBuilder{
 	 * @param runtime dependency injected from where repository
 	 * dependencies are resolved.
 	 */
-	OrderBuilderImpl( CustomerRepository customerRepository,ArticleRepository articleRepository,OrderRepository orderRepository) {
+	OrderBuilderImpl( CustomerRepository customerRepository, InventoryManager inventoryManager, OrderRepository orderRepository ) {
 		this.customerRepository = customerRepository;
-		this.articleRepository = articleRepository;
+		this.inventoryManager = inventoryManager;
 		this.orderRepository = orderRepository;
+		this.calculator = new CalculatorImpl();
+		this.formatter = new PrinterImpl(calculator).createFormatter();
 	}
 
 
 	/**
-	 * Save order to OrderRepository.
+	 * Save order to OrderRepository if order is fillable (all order items
+	 * can be allocated from current inventory).
 	 * 
 	 * @param order saved to OrderRepository
 	 * @return chainable self-reference
 	 */
 	public boolean accept( Order order ) {
-		// TODO: validate order
-		boolean validOrder = inventoryManager.isFillable( order );
-		if( validOrder ) {
-			orderRepository.save( order );
-			}
-		return validOrder;
+		long orderValue = calculator.calculateValue( order );
+		//
+		boolean isFillable = inventoryManager.isFillable( order );
+		if( isFillable && (
+				isFillable = inventoryManager.fill( order )
+		) ) {
+			StringBuffer fmtValue = formatter.fmtPaddedPrice( orderValue, 12, ' ', Currency.NONE );
+			System.out.println( "Order: " + order.getId() + " filled:" + fmtValue.toString() );
+			orderRepository.save( order );	// save filled order
+		} else {
+			StringBuffer fmtValue = formatter.fmtPrice( orderValue, Currency.NONE );
+			System.err.println( "Order: " + order.getId() + " is not fillable from current inventory: " + fmtValue.toString() );
+		}
+		return isFillable;
 	}
 
 
@@ -104,7 +122,8 @@ class OrderBuilderImpl implements OrderBuilder{
 		Customer brigitte = crep.findById( 660380 ).get();
 		Customer joel = crep.findById( 582596 ).get();
 
-		ArticleRepository arep = articleRepository;
+//		ArticleRepository arep = articleRepository;
+		InventoryManager arep = inventoryManager;
 		/*
 		 * Look up articles from ArticleRepository.
 		 */

@@ -1,12 +1,12 @@
 package system.impl;
 
-import system.DataRepository.ArticleRepository;
 import system.DataRepository.CustomerRepository;
 import system.DataRepository.OrderRepository;
+import system.InventoryManager;
 
 
 /**
- * Public interface of a data provider that reads or writes data from/to a data source.
+ * Local interface of a data provider that reads or writes data from/to a data source.
  *
  */
 
@@ -25,8 +25,8 @@ interface DataSource {
 	 */
 
 	long importCustomerJSON( String jsonFileName, CustomerRepository collector, Integer... limit );
-	
-	long importArticleJSON( String jsonFileName, ArticleRepository collector, Integer... limit );
+
+	long importArticleJSON( String jsonFileName, InventoryManager inventoryManager, Integer... limit );
 
 	long importOrderJSON( String jsonFileName, OrderRepository collector, Integer... limit );
 

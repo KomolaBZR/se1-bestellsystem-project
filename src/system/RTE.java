@@ -142,12 +142,13 @@ public interface RTE {
 		CustomerRepository getCustomerRepository();
 
 
-		/**
+/*		/**
 		 * Return singleton instance of ArticleRepository.
 		 * 
 		 * @return singleton instance of ArticleRepository
 		 */
-		ArticleRepository getArticleRepository();
+//		ArticleRepository getArticleRepository();
+		
 
 
 		/**
