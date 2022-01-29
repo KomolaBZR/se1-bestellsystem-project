@@ -159,6 +159,7 @@ class PrinterImpl implements Printer{
 		fileWriter.close();
 		//throw new IOException( "not implemented." );
 	}
+
 	/**
 	 * Create new format
 	 * 

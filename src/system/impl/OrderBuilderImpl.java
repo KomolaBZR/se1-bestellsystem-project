@@ -74,7 +74,6 @@ class OrderBuilderImpl implements OrderBuilder{
 		this.formatter = new PrinterImpl(calculator).createFormatter();
 	}
 
-
 	/**
 	 * Save order to OrderRepository if order is fillable (all order items
 	 * can be allocated from current inventory).
@@ -97,6 +96,7 @@ class OrderBuilderImpl implements OrderBuilder{
 			System.err.println( "Order: " + order.getId() + " is not fillable from current inventory: " + fmtValue.toString() );
 		}
 		return isFillable;
+
 	}
 
 

@@ -3,6 +3,7 @@ package system;
 import datamodel.Order;
 
 
+
 /**
  * Public interface of the InventoryManager that manages the inventory
  * of articles. InventoryManager uses (and hides) the Article repository.
