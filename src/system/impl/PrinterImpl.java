@@ -136,6 +136,8 @@ class PrinterImpl implements Printer{
 		return formatter.getBuffer();
 	}
 	
+
+	
 	/**
 	 * Print orders as table to a file.
 	 * 
@@ -157,7 +159,6 @@ class PrinterImpl implements Printer{
 		fileWriter.close();
 		//throw new IOException( "not implemented." );
 	}
-	
 	/**
 	 * Create new format
 	 * 

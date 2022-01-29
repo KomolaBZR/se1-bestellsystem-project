@@ -1,4 +1,4 @@
-package application;
+package system.impl;
 
 import system.RTE.Runtime;
 import system.DataRepository.CustomerRepository;
@@ -8,22 +8,24 @@ import datamodel.Customer;
 import datamodel.Order;
 import system.DataRepository.ArticleRepository;
 import system.DataRepository.OrderRepository;
+import system.InventoryManager;
+import system.OrderBuilder;
 
 
 /**
  * Singleton component that builds orders and stores them in the
  * OrderRepository.
  * 
- * @author
+ * @author Komola Benzinger
  *
  */
 
-public class OrderBuilder {
+class OrderBuilderImpl implements OrderBuilder{
 
 	/**
 	 * static singleton reference to OrderBuilder instance (singleton pattern).
 	 */
-	private static OrderBuilder orderBuilder_instance = null;
+	private static OrderBuilder orderBuilder;
 
 	/**
 	 * Repository dependencies.
@@ -33,20 +35,22 @@ public class OrderBuilder {
 	private final ArticleRepository articleRepository;
 	//
 	private final OrderRepository orderRepository;
+	private final InventoryManager inventoryManager = new InventoryManagerMOCK();
 
-
+	
 	/**
 	 * Provide access to RTE OrderBuilder singleton instance (singleton pattern).
 	 * 
 	 * @param runtime dependency to resolve Repository dependencies.
 	 * @return
 	 */
-	public static OrderBuilder getInstance( Runtime runtime ) {
-		if( orderBuilder_instance == null ) {
-			orderBuilder_instance = new OrderBuilder( runtime );
+	OrderBuilder getOrderBuilder () {
+		if( orderBuilder == null ) {
+			orderBuilder = new OrderBuilderImpl(customerRepository, articleRepository, orderRepository);
 		}
-		return orderBuilder_instance;
+		return orderBuilder;
 	}
+
 
 
 	/**
@@ -55,10 +59,10 @@ public class OrderBuilder {
 	 * @param runtime dependency injected from where repository
 	 * dependencies are resolved.
 	 */
-	private OrderBuilder( Runtime runtime ) {
-		this.customerRepository = runtime.getCustomerRepository();
-		this.articleRepository = runtime.getArticleRepository();
-		this.orderRepository = runtime.getOrderRepository();
+	OrderBuilderImpl( CustomerRepository customerRepository,ArticleRepository articleRepository,OrderRepository orderRepository) {
+		this.customerRepository = customerRepository;
+		this.articleRepository = articleRepository;
+		this.orderRepository = orderRepository;
 	}
 
 
@@ -70,9 +74,11 @@ public class OrderBuilder {
 	 */
 	public boolean accept( Order order ) {
 		// TODO: validate order
-		boolean valid = true;
-		orderRepository.save( order ); // save order to OrderRepository
-		return valid;
+		boolean validOrder = inventoryManager.isFillable( order );
+		if( validOrder ) {
+			orderRepository.save( order );
+			}
+		return validOrder;
 	}
 
 
@@ -221,5 +227,4 @@ public class OrderBuilder {
 
 		return this;
 	}
-
 }

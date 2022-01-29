@@ -11,6 +11,9 @@ import system.RTE;
 import system.DataRepository.ArticleRepository;
 import system.DataRepository.CustomerRepository;
 import system.DataRepository.OrderRepository;
+import system.InventoryManager;
+import system.OrderBuilder;
+
 //
 import static system.RTE.Configuration.KEY_DATASOURCE;
 import static system.RTE.Configuration.JSON_DATASOURCE;
@@ -253,5 +256,18 @@ class RTE_Impl implements RTE {
 			});
 			return this;
 		}
+
+		@Override
+		public OrderBuilder getOrderBuilder() {
+			// TODO Auto-generated method stub
+			return (OrderBuilder) new OrderBuilderImpl(getCustomerRepository(),getArticleRepository(),getOrderRepository());
+		}
+
+		@Override
+		public InventoryManager getInventoryManager() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
 	}
 }
