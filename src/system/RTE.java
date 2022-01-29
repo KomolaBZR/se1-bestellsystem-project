@@ -142,12 +142,13 @@ public interface RTE {
 		CustomerRepository getCustomerRepository();
 
 
-		/**
+/*		/**
 		 * Return singleton instance of ArticleRepository.
 		 * 
 		 * @return singleton instance of ArticleRepository
 		 */
-		ArticleRepository getArticleRepository();
+//		ArticleRepository getArticleRepository();
+		
 
 
 		/**
@@ -165,6 +166,20 @@ public interface RTE {
 		 * @return chainable self reference.
 		 */
 		Runtime loadData();
+		
+		/**
+		 * Return singleton instance of OrderBuilder.
+		 * 
+		 * @return singleton instance of OrderBuilder
+		 */
+		OrderBuilder getOrderBuilder();
+		
+		/**
+		   * Return singleton instance of InventoryManager.
+		   *
+		   * @return singleton instance of InventoryManager.
+		   */
+		InventoryManager getInventoryManager();
 
 	}
 
